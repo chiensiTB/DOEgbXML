@@ -20,6 +20,8 @@ namespace DOEgbXML
         public Vector.CartCoord InsertionPoint;
         public List<Vector.MemorySafe_CartCoord> PlCoords;
         public Vector.MemorySafe_CartVect PlRHRVector;
+        public string constructionIdRef;
+        //public gbXMLSerializer.Construction construction;
 
         public static DOEgbXMLPhase2Report SurfaceAdjSpaceIdTest(List<string> surfaceIds, List<SurfaceDefinitions> surfaces, DOEgbXMLPhase2Report report)
         {

@@ -3,11 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using VectorMath;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace DOEgbXML
 {
     public class DOEgbXMLBasics
     {
+        public class gbXMLSchedules
+        {
+            public gbXMLSerializer.Schedule schedule { get; set; }
+            public List<gbXMLSerializer.YearSchedule> ysch { get; set; }
+            public List<gbXMLSerializer.WeekSchedule> wsch { get; set; }
+            public List<gbXMLSerializer.DaySchedule> dsch { get; set; }
+        }
+
+
         public class EdgeFamily
         {
             public List<Vector.MemorySafe_CartCoord> startendpt;
@@ -122,6 +133,34 @@ namespace DOEgbXML
             }
         }
 
+        public static gbXMLSerializer.scheduleTypeEnum getScheduleTypeEnum(string gbXMLstring)
+        {
+            Dictionary<string, gbXMLSerializer.scheduleTypeEnum> match = new Dictionary<string, gbXMLSerializer.scheduleTypeEnum>();
+            match["Fraction"] = gbXMLSerializer.scheduleTypeEnum.Fraction;
+            match["OnOff"] = gbXMLSerializer.scheduleTypeEnum.OnOff;
+            match["Temp"] = gbXMLSerializer.scheduleTypeEnum.Temp;
+            return match[gbXMLstring];
+        }
+
+        public static gbXMLSerializer.dayTypeEnum getDayTypeEnum(string gbXMLstring)
+        {
+            Dictionary<string, gbXMLSerializer.dayTypeEnum> match = new Dictionary<string, gbXMLSerializer.dayTypeEnum>();
+            match["All"] = gbXMLSerializer.dayTypeEnum.All;
+            match["CoolingDesignDay"]=gbXMLSerializer.dayTypeEnum.CoolingDesignDay;
+            match["Fri"]=gbXMLSerializer.dayTypeEnum.Fri;
+            match["HeatingDesignDay"]=gbXMLSerializer.dayTypeEnum.HeatingDesignDay;
+            match["Holiday"]=gbXMLSerializer.dayTypeEnum.Holiday;
+            match["Mon"]=gbXMLSerializer.dayTypeEnum.Mon;
+            match["Sat"]=gbXMLSerializer.dayTypeEnum.Sat;
+            match["Sun"]=gbXMLSerializer.dayTypeEnum.Sun;
+            match["Thu"]=gbXMLSerializer.dayTypeEnum.Thu;
+            match["Tue"]=gbXMLSerializer.dayTypeEnum.Tue;
+            match["Wed"]=gbXMLSerializer.dayTypeEnum.Wed;
+            match["Weekday"]=gbXMLSerializer.dayTypeEnum.Weekday;
+            match["Weekend"]=gbXMLSerializer.dayTypeEnum.Weekend;
+            match["WeekendOrHoliday"]=gbXMLSerializer.dayTypeEnum.WeekendOrHoliday;
+            return match[gbXMLstring];
+        }
 
         static public double FindAzimuth(Vector.MemorySafe_CartVect normalVector)
         {
@@ -1796,6 +1835,138 @@ namespace DOEgbXML
             }
 
             return report;
+        }
+
+        public static List<gbXMLSchedules> getYearSchedules(XmlDocument xmldoc, XmlNamespaceManager xmlns,string searchstring)
+        {
+            List<gbXMLSchedules> sch = new List<gbXMLSchedules>();
+            XmlNodeList nodes = xmldoc.SelectNodes(searchstring, xmlns);
+
+            //pulls back all the schedules
+            foreach (XmlNode node in nodes)
+            {
+                gbXMLSchedules schColl = new gbXMLSchedules();
+                schColl.schedule = new gbXMLSerializer.Schedule();
+                //should accommodate the case when no year schedule is wrapped up inside
+                XmlAttributeCollection schatts = node.Attributes;
+                foreach (XmlAttribute at in schatts)
+                {
+                    if (at.Name == "type")
+                    {
+                        schColl.schedule.type = getScheduleTypeEnum(at.Value);
+                    }
+                    else if (at.Name == "id")
+                    {
+                        schColl.schedule.id = at.Value;
+                    }
+                }
+                schColl.ysch = new List<gbXMLSerializer.YearSchedule>();
+                foreach (XmlNode child in node)
+                {
+                    if (child.Name == "Name")
+                    {
+                        schColl.schedule.Name = child.Value;
+                    }
+                    if (child.Name == "YearSchedule")
+                    {
+                        gbXMLSerializer.YearSchedule locyr = new gbXMLSerializer.YearSchedule();
+                        XmlAttributeCollection chatts = child.Attributes;
+                        foreach (XmlAttribute chat in chatts)
+                        {
+                            if (chat.Name == "id")
+                            {
+                                locyr.id = chat.Value;
+                            }
+                        }
+                        //there could be multiple begin and end dates and schedule Ids, so this could be incorrect the way I have created it.
+                        //this could be far more complicated, encapsulated in its own function
+                        XmlNode wksch = child["WeekScheduleId"];
+                        locyr.WeekScheduleId = new gbXMLSerializer.WeekScheduleId();
+                        locyr.WeekScheduleId.weekScheduleIdRef = wksch.Attributes["weekScheduleIdRef"].Value;
+                        XmlNode bd = child["BeginDate"];
+                        locyr.BeginDate = DateTime.Parse(bd.InnerText);
+                        XmlNode ed = child["EndDate"];
+                        locyr.EndDate = DateTime.Parse(ed.InnerText);
+                        schColl.ysch.Add(locyr);
+                        //find the week that is associated with the WeekScheduleId
+                        string weekstring = "/gbXMLv5:gbXML/gbXMLv5:WeekSchedule" + "[@id='" + locyr.WeekScheduleId.weekScheduleIdRef + "']";
+                        XmlNodeList wknodes = xmldoc.SelectNodes(weekstring, xmlns);
+                        //there should only be one, if there is more, perhaps this should be logged
+                        XmlNode wknode = wknodes[0];
+
+                        schColl.wsch = new List<gbXMLSerializer.WeekSchedule>();
+                        gbXMLSerializer.WeekSchedule wk = new gbXMLSerializer.WeekSchedule();
+
+                        wk.type = getScheduleTypeEnum(wknode.Attributes["type"].Value);
+                        wk.id = wknode.Attributes["id"].Value;
+
+                        //I think that this is the only way to do this, but is flaky
+                        int daycount = wknode.ChildNodes.Count -1;
+                        wk.Day = new gbXMLSerializer.Day[daycount];
+                        int childcount = 0;
+                        int dayelem = 0;
+                        schColl.dsch = new List<gbXMLSerializer.DaySchedule>();
+                        foreach (XmlNode childnode in wknode.ChildNodes)
+                        {
+                            if (childnode.Name == "Day")
+                            {
+                                //this is a day reference in the week schedule, which we'll use to grab the day profile
+                                gbXMLSerializer.Day d = new gbXMLSerializer.Day();
+                                d.dayScheduleIdRef = childnode.Attributes["dayScheduleIdRef"].Value;
+                                d.dayType = getDayTypeEnum(childnode.Attributes["dayType"].Value);
+                                wk.Day[dayelem] = d;
+                                dayelem++;
+                                //get the day schedule associated with dayScheduleIdRef
+                                string daystring = "/gbXMLv5:gbXML/gbXMLv5:DaySchedule" + "[@id='" + d.dayScheduleIdRef + "']";
+                                XmlNodeList dynodes = xmldoc.SelectNodes(daystring, xmlns);
+                                //there should be only one, maybe a way to figure this out such that it is logged if not
+                                XmlNode daysched = dynodes[0];
+                                
+                                //Tried this technique, but failed
+                                //XmlNodeReader xmlr = new XmlNodeReader(daysched);
+                                //Type type = typeof(gbXMLSerializer.DaySchedule);
+                                //XmlSerializer serial = new XmlSerializer(type);
+                                //object obj = serial.Deserialize(xmlr);
+                                //xmlr.Close();
+                                //gbXMLSerializer.DaySchedule locday = (gbXMLSerializer.DaySchedule)obj;
+                                //schColl.dsch.Add(locday);
+
+                                gbXMLSerializer.DaySchedule locday = new gbXMLSerializer.DaySchedule();
+                                locday.type = getScheduleTypeEnum(daysched.Attributes["type"].Value);
+                                locday.id = daysched.Attributes["id"].Value;
+                                locday.ScheduleValue = new gbXMLSerializer.ScheduleValue[24];
+                                int schedvalct = 0;
+                                foreach (XmlNode scheduleval in daysched.ChildNodes)
+                                {
+                                    if (scheduleval.Name == "ScheduleValue")
+                                    {
+                                        gbXMLSerializer.ScheduleValue valinst = new gbXMLSerializer.ScheduleValue();
+                                        valinst.value = Convert.ToDouble(scheduleval.InnerText);
+                                        locday.ScheduleValue[schedvalct] = valinst;
+                                        schedvalct++;
+                                    }
+                                    else if (scheduleval.Name == "Name")
+                                    {
+                                        locday.Name = scheduleval.InnerText;
+                                    }
+                                }
+                                schColl.dsch.Add(locday);
+                            }
+                            else if (childnode.Name == "Name")
+                            {
+                                //it must be the name
+                                wk.Name = childnode.InnerText;
+                            }
+                            childcount++;
+                        }
+                        schColl.wsch.Add(wk);
+                    }
+                    sch.Add(schColl);
+                }
+                
+
+            }
+            return sch;
         }
 
         public DOEgbXMLReportingObj ValidateEdges(Dictionary<int, EdgeFamily> edges, DOEgbXMLReportingObj report)

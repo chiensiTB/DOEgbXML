@@ -8,3 +8,14 @@ C:\Users\Chiensi\Documents\Visual Studio 2010\Projects\DOEgbxml\DOEgbxml\obj\Deb
 C:\Users\Chiensi\Documents\Visual Studio 2010\Projects\DOEgbxml\DOEgbxml\obj\Debug\DOEgbxml.pdb
 C:\Users\Chiensi\Documents\Visual Studio 2010\Projects\DOEgbxml\DOEgbxml\bin\Debug\gbXMLSerializer.dll
 C:\Users\Chiensi\Documents\Visual Studio 2010\Projects\DOEgbxml\DOEgbxml\bin\Debug\gbXMLSerializer.pdb
+C:\Users\Chiendog\Documents\GitHub\DOEgbXML\DOEgbxml\bin\Debug\DOEgbxml.dll
+C:\Users\Chiendog\Documents\GitHub\DOEgbXML\DOEgbxml\bin\Debug\DOEgbxml.pdb
+C:\Users\Chiendog\Documents\GitHub\DOEgbXML\DOEgbxml\bin\Debug\gbXMLSerializer.dll
+C:\Users\Chiendog\Documents\GitHub\DOEgbXML\DOEgbxml\bin\Debug\log4net.dll
+C:\Users\Chiendog\Documents\GitHub\DOEgbXML\DOEgbxml\bin\Debug\VectorMath.dll
+C:\Users\Chiendog\Documents\GitHub\DOEgbXML\DOEgbxml\bin\Debug\gbXMLSerializer.pdb
+C:\Users\Chiendog\Documents\GitHub\DOEgbXML\DOEgbxml\bin\Debug\log4net.xml
+C:\Users\Chiendog\Documents\GitHub\DOEgbXML\DOEgbxml\bin\Debug\VectorMath.pdb
+C:\Users\Chiendog\Documents\GitHub\DOEgbXML\DOEgbxml\obj\Debug\DOEgbxml.csprojResolveAssemblyReference.cache
+C:\Users\Chiendog\Documents\GitHub\DOEgbXML\DOEgbxml\obj\Debug\DOEgbxml.dll
+C:\Users\Chiendog\Documents\GitHub\DOEgbXML\DOEgbxml\obj\Debug\DOEgbxml.pdb

@@ -22,9 +22,11 @@ namespace DOEgbXML
         public gbXMLSerializer.YearSchedule epsched;
         public gbXMLSerializer.LightPowerPerArea slp;
         public gbXMLSerializer.YearSchedule lpsched;
-        public gbXMLSerializer.PeopleHeatGain phg;
+        public gbXMLSerializer.PeopleNumber pn;
+        public List<gbXMLSerializer.PeopleHeatGain> phg;
         public gbXMLSerializer.YearSchedule psched;
-        
+        public gbXMLSerializer.Area spArea;
+        public gbXMLSerializer.Volume spVol;
 
         public class PlanarGeometry
         {
@@ -63,6 +65,32 @@ namespace DOEgbXML
             Dictionary<string, gbXMLSerializer.powerPerAreaUnitEnum> match = new Dictionary<string, powerPerAreaUnitEnum>();
             match["WattPerSquareMeter"] = gbXMLSerializer.powerPerAreaUnitEnum.WattPerSquareMeter;
             match["WattPerSquareFoot"] = gbXMLSerializer.powerPerAreaUnitEnum.WattPerSquareFoot;
+            return match[gbXMLstring];
+        }
+
+        public static gbXMLSerializer.peopleHeatGainUnitEnum getPeopleHgUnitEnum(string gbXMLstring)
+        {
+            Dictionary<string, gbXMLSerializer.peopleHeatGainUnitEnum> match = new Dictionary<string, peopleHeatGainUnitEnum>();
+            match["WattPerPerson"] = gbXMLSerializer.peopleHeatGainUnitEnum.WattPerPerson;
+            match["BtuPerHourPerson"] = gbXMLSerializer.peopleHeatGainUnitEnum.BtuPerHourPerson;
+            return match[gbXMLstring];
+        }
+
+        public static gbXMLSerializer.peopleHeatGainTypeEnum getPeopleHgTypeEnum(string gbXMLstring)
+        {
+            Dictionary<string, gbXMLSerializer.peopleHeatGainTypeEnum> match = new Dictionary<string, peopleHeatGainTypeEnum>();
+            match["Total"] = gbXMLSerializer.peopleHeatGainTypeEnum.Total;
+            match["Sensible"] = gbXMLSerializer.peopleHeatGainTypeEnum.Sensible;
+            match["Latent"] = gbXMLSerializer.peopleHeatGainTypeEnum.Latent;
+            return match[gbXMLstring];
+        }
+
+        public static gbXMLSerializer.peopleNumberUnitEnum getPeopleNumberUnitEnum(string gbXMLstring)
+        {
+            Dictionary<string, gbXMLSerializer.peopleNumberUnitEnum> match = new Dictionary<string, peopleNumberUnitEnum>();
+            match["SquareMPerPerson"] = gbXMLSerializer.peopleNumberUnitEnum.SquareMPerPerson;
+            match["SquareFtPerPerson"] = gbXMLSerializer.peopleNumberUnitEnum.SquareFtPerPerson;
+            match["NumberOfPeople"] = gbXMLSerializer.peopleNumberUnitEnum.NumberOfPeople;
             return match[gbXMLstring];
         }
 
@@ -108,7 +136,8 @@ namespace DOEgbXML
                 {
                     //initialize a new instance of the class
                     gbXMLSpaces space = new gbXMLSpaces();
-                    space.spacebounds = new List<SpaceBoundary>();
+                    space.spacebounds = new List<SpaceBoundary>(); // list of gbXML space boundaries
+                    space.phg = new List<PeopleHeatGain>(); //list of gbXML heat gains
                     //get id and space
                     XmlAttributeCollection spaceAtts = spaceNode.Attributes;
                     foreach (XmlAttribute at in spaceAtts)
@@ -122,16 +151,19 @@ namespace DOEgbXML
                         {
                             space.lpsched = new YearSchedule();
                             space.lpsched.id = at.Value;
+                            //only grab name, another routine will do the rest
                         }
                         else if (at.Name == "equipmentScheduleIdRef")
                         {
                             space.epsched = new YearSchedule();
                             space.epsched.id = at.Value;
+                            //only grab name, another routine will do the rest
                         }
                         else if (at.Name == "peopleScheduleIdRef")
                         {
                             space.psched = new YearSchedule();
                             space.psched.id = at.Value;
+                            //only grab name, another routine will do the rest
                         }
                     }
                     if (spaceNode.HasChildNodes)
@@ -139,7 +171,17 @@ namespace DOEgbXML
                         XmlNodeList childNodes = spaceNode.ChildNodes;
                         foreach (XmlNode node in childNodes)
                         {
-                            if (node.Name == "PlanarGeometry")
+                            if (node.Name == "Area")
+                            {
+                                space.spArea = new Area();
+                                space.spArea.val = node.Value;
+                            }
+                            else if (node.Name == "Volume")
+                            {
+                                space.spVol = new Volume();
+                                space.spVol.val = node.Value;
+                            }
+                            else if (node.Name == "PlanarGeometry")
                             {
                                 space.pg = new PlanarGeometry();
                                 XmlNodeList childnodes = node.ChildNodes;
@@ -328,6 +370,38 @@ namespace DOEgbXML
                                     }
                                 }
                                 space.sep.epd = node.InnerText;
+                            }
+                            else if (node.Name == "PeopleNumber")
+                            {
+                                XmlAttributeCollection pnpatts = node.Attributes;
+                                space.pn = new PeopleNumber();
+                                foreach (XmlAttribute at in pnpatts)
+                                {
+                                    if (at.Name == "unit")
+                                    {
+                                        space.pn.unit = getPeopleNumberUnitEnum(at.Value);
+                                    }
+                                    space.pn.valuefield = node.Value;
+                                }
+                            }
+                            else if (node.Name == "PeopleHeatGain")
+                            {
+                                XmlAttributeCollection ppatts = node.Attributes;
+                                PeopleHeatGain locphg = new PeopleHeatGain();
+                                foreach (XmlAttribute at in ppatts)
+                                {
+
+                                    if (at.Name == "unit")
+                                    {
+                                        locphg.unit = getPeopleHgUnitEnum(at.Value);
+                                    }
+                                    else if (at.Name == "heatGainType")
+                                    {
+                                        locphg.heatGainType = getPeopleHgTypeEnum(at.Value);
+                                    }
+                                }
+                                locphg.value = node.Value;
+                                space.phg.Add(locphg);
                             }
                         }
                     }

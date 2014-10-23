@@ -27,7 +27,21 @@ namespace DOEgbXML
         public List<Vector.MemorySafe_CartCoord> PlCoords;
         public Vector.MemorySafe_CartVect PlRHRVector;
     }
+    public class gbConstructions
+    {
+        public List<gbXMLSerializer.Construction> constr;
+        public List<gbXMLSerializer.Layer> layers;
+        public List<gbXMLSerializer.Material> materials;
+        public List<gbXMLSerializer.WindowType> windows;
 
+        public gbConstructions()
+        {
+            constr = new List<gbXMLSerializer.Construction>();
+            layers = new List<gbXMLSerializer.Layer>();
+            materials = new List<gbXMLSerializer.Material>();
+            windows = new List<gbXMLSerializer.WindowType>();
+        }
+    }
     public class XMLParser
     {
 
@@ -3863,6 +3877,539 @@ namespace DOEgbXML
             return report;
         }
 
+        public static gbXMLSerializer.absorptanceUnitEnum getAbsorptanceEnum(string gbxmlstring)
+        {
+            Dictionary<string, gbXMLSerializer.absorptanceUnitEnum> match = new Dictionary<string, gbXMLSerializer.absorptanceUnitEnum>();
+            match["ExtIR"]=gbXMLSerializer.absorptanceUnitEnum.ExtIR;
+            match["ExtSolar"]=gbXMLSerializer.absorptanceUnitEnum.ExtSolar;
+            match["ExtTotal"]=gbXMLSerializer.absorptanceUnitEnum.ExtTotal;
+            match["ExtVisible"]=gbXMLSerializer.absorptanceUnitEnum.ExtVisible;
+            match["IntIr"]=gbXMLSerializer.absorptanceUnitEnum.IntIr;
+            match["IntSolar"]=gbXMLSerializer.absorptanceUnitEnum.IntSolar;
+            match["IntTotal"]=gbXMLSerializer.absorptanceUnitEnum.IntTotal;
+            match["IntVisible"]=gbXMLSerializer.absorptanceUnitEnum.IntVisible;
+            return match[gbxmlstring];
+        }
+
+        public static gbXMLSerializer.reflectanceTypeEnum getReflectanceEnum(string gbxmlstring)
+        {
+            Dictionary<string, gbXMLSerializer.reflectanceTypeEnum> match = new Dictionary<string, gbXMLSerializer.reflectanceTypeEnum>();
+            match["ExtIR"] = gbXMLSerializer.reflectanceTypeEnum.ExtIR;
+            match["ExtSolar"] = gbXMLSerializer.reflectanceTypeEnum.ExtSolar;
+            match["ExtVisible"] = gbXMLSerializer.reflectanceTypeEnum.ExtVisible;
+            match["Ground"] = gbXMLSerializer.reflectanceTypeEnum.Ground;
+            match["IntIR"] = gbXMLSerializer.reflectanceTypeEnum.IntIR;
+            match["IntSolar"] = gbXMLSerializer.reflectanceTypeEnum.IntSolar;
+            match["IntVisible"] = gbXMLSerializer.reflectanceTypeEnum.IntVisible;
+            return match[gbxmlstring];
+        }
+
+        public static gbXMLSerializer.emittanceTypeEnum getEmittanceTypeEnum(string gbxmlstring)
+        {
+            Dictionary<string, gbXMLSerializer.emittanceTypeEnum> match = new Dictionary<string, gbXMLSerializer.emittanceTypeEnum>();
+            match["ExtIR"] = gbXMLSerializer.emittanceTypeEnum.ExtIR;
+            match["IntIR"] = gbXMLSerializer.emittanceTypeEnum.IntIR;
+            return match[gbxmlstring];
+        }
+
+        public static gbXMLSerializer.unitlessUnitEnum getUnitEnum(string gbxmlstring)
+        {
+            Dictionary<string, gbXMLSerializer.unitlessUnitEnum> match = new Dictionary<string, gbXMLSerializer.unitlessUnitEnum>();
+            match["Fraction"] = gbXMLSerializer.unitlessUnitEnum.Fraction;
+            match["Percent"] = gbXMLSerializer.unitlessUnitEnum.Percent;
+            return match[gbxmlstring];
+        }
+
+        public static gbXMLSerializer.radiationWavelengthTypeEnum getRadiationWavelengthEnum(string gbxmlstring)
+        {
+            Dictionary<string, gbXMLSerializer.radiationWavelengthTypeEnum> match = new Dictionary<string, gbXMLSerializer.radiationWavelengthTypeEnum>();
+            match["IR"] = gbXMLSerializer.radiationWavelengthTypeEnum.IR;
+            match["Solar"] = gbXMLSerializer.radiationWavelengthTypeEnum.Solar;
+            match["Visible"] = gbXMLSerializer.radiationWavelengthTypeEnum.Visible;
+            return match[gbxmlstring];
+        }
+
+        public static gbXMLSerializer.roughnessValueEnum getRoughnessValueEnum(string gbxmlstring)
+        {
+            Dictionary<string, gbXMLSerializer.roughnessValueEnum> match = new Dictionary<string, gbXMLSerializer.roughnessValueEnum>();
+            match["MediumRough"] = gbXMLSerializer.roughnessValueEnum.MediumRough;
+            match["MediumSmooth"] = gbXMLSerializer.roughnessValueEnum.MediumSmooth;
+            match["Rough"] = gbXMLSerializer.roughnessValueEnum.Rough;
+            match["Smooth"] = gbXMLSerializer.roughnessValueEnum.Smooth;
+            match["VeryRough"] = gbXMLSerializer.roughnessValueEnum.VeryRough;
+            match["VerySmooth"] = gbXMLSerializer.roughnessValueEnum.VerySmooth;
+            return match[gbxmlstring];
+        }
+
+        public static gbXMLSerializer.costTypeEnum getCostTypeEnum(string gbxmlstring)
+        {
+            Dictionary<string, gbXMLSerializer.costTypeEnum> match = new Dictionary<string, gbXMLSerializer.costTypeEnum>();
+            match["AnnualCost"] = gbXMLSerializer.costTypeEnum.AnnualCost;
+            match["CO2"] = gbXMLSerializer.costTypeEnum.CO2;
+            match["DeliveryCost"] = gbXMLSerializer.costTypeEnum.DeliveryCost;
+            match["EmbodiedEnergyInstallation"] = gbXMLSerializer.costTypeEnum.EmbodiedEnergyInstallation;
+            match["EmbodiedEnergyManufacture"] = gbXMLSerializer.costTypeEnum.EmbodiedEnergyManufacture;
+            match["EmbodiedEnergyTotal"] = gbXMLSerializer.costTypeEnum.EmbodiedEnergyTotal;
+            match["EmbodiedEnergyTransportation"] = gbXMLSerializer.costTypeEnum.EmbodiedEnergyTransportation;
+            match["FirstCost"] = gbXMLSerializer.costTypeEnum.FirstCost;
+            match["InstallationCost"] = gbXMLSerializer.costTypeEnum.InstallationCost;
+            match["MaintenanceCost"] = gbXMLSerializer.costTypeEnum.MaintenanceCost;
+            match["MonthlyCost"] = gbXMLSerializer.costTypeEnum.MonthlyCost;
+            match["NOx"] = gbXMLSerializer.costTypeEnum.NOx;
+            match["OverhaulCost"] = gbXMLSerializer.costTypeEnum.OverhaulCost;
+            match["PurchaseCost"] = gbXMLSerializer.costTypeEnum.PurchaseCost;
+            match["SOx"] = gbXMLSerializer.costTypeEnum.SOx;
+            return match[gbxmlstring];
+        }
+
+        public static gbXMLSerializer.currencyTypeEnum getCurrencyTypeEnum(string gbxmlstring)
+        {
+            Dictionary<string, gbXMLSerializer.currencyTypeEnum> match = new Dictionary<string, gbXMLSerializer.currencyTypeEnum>();
+            match["AustralianDollar"] = gbXMLSerializer.currencyTypeEnum.AustralianDollar;
+            match["CanadianDollars"] = gbXMLSerializer.currencyTypeEnum.CanadianDollars;
+            match["EnglishPound"] = gbXMLSerializer.currencyTypeEnum.EnglishPound;
+            match["Euros"] = gbXMLSerializer.currencyTypeEnum.Euros;
+            match["Franc"] = gbXMLSerializer.currencyTypeEnum.Franc;
+            match["IndianRupee"] = gbXMLSerializer.currencyTypeEnum.IndianRupee;
+            match["Mark"] = gbXMLSerializer.currencyTypeEnum.Mark;
+            match["NewZealandDollar"] = gbXMLSerializer.currencyTypeEnum.NewZealandDollar;
+            match["Pesos"] = gbXMLSerializer.currencyTypeEnum.Pesos;
+            match["Real"] = gbXMLSerializer.currencyTypeEnum.Real;
+            match["Ruble"] = gbXMLSerializer.currencyTypeEnum.Ruble;
+            match["TaiwanDollar"] = gbXMLSerializer.currencyTypeEnum.TaiwanDollar;
+            match["USDollars"] = gbXMLSerializer.currencyTypeEnum.USDollars;
+            match["Yen"] = gbXMLSerializer.currencyTypeEnum.Yen;
+            match["Yuan"] = gbXMLSerializer.currencyTypeEnum.Yuan;
+            return match[gbxmlstring];
+        }
+
+        public static gbXMLSerializer.resistanceUnitEnum getResistanceUnitEnum(string gbxmlstring)
+        {
+            Dictionary<string, gbXMLSerializer.resistanceUnitEnum> match = new Dictionary<string, gbXMLSerializer.resistanceUnitEnum>();
+            match["HrSquareFtFPerBTU"] = gbXMLSerializer.resistanceUnitEnum.HrSquareFtFPerBTU;
+            match["SquareMeterKPerW"] = gbXMLSerializer.resistanceUnitEnum.SquareMeterKPerW;
+            return match[gbxmlstring];
+        }
+
+        public static gbXMLSerializer.lengthUnitEnum getLengthUnitEnum(string gbxmlstring)
+        {
+            Dictionary<string, gbXMLSerializer.lengthUnitEnum> match = new Dictionary<string, gbXMLSerializer.lengthUnitEnum>();
+            match["Centimeters"] = gbXMLSerializer.lengthUnitEnum.Centimeters;
+            match["Feet"] = gbXMLSerializer.lengthUnitEnum.Feet;
+            match["Inches"] = gbXMLSerializer.lengthUnitEnum.Inches;
+            match["Kilometers"] = gbXMLSerializer.lengthUnitEnum.Kilometers;
+            match["Meters"] = gbXMLSerializer.lengthUnitEnum.Meters;
+            match["Miles"] = gbXMLSerializer.lengthUnitEnum.Miles;
+            match["Millimeters"] = gbXMLSerializer.lengthUnitEnum.Millimeters;
+            match["Yards"] = gbXMLSerializer.lengthUnitEnum.Yards;
+            return match[gbxmlstring];
+        }
+
+        public static gbXMLSerializer.conductivityUnitEnum getConductivityUnitEnum(string gbxmlstring)
+        {
+            Dictionary<string, gbXMLSerializer.conductivityUnitEnum> match = new Dictionary<string, gbXMLSerializer.conductivityUnitEnum>();
+            match["BtuPerHourFtF"] = gbXMLSerializer.conductivityUnitEnum.BtuPerHourFtF;
+            match["WPerCmC"] = gbXMLSerializer.conductivityUnitEnum.WPerCmC;
+            match["WPerMeterK"] = gbXMLSerializer.conductivityUnitEnum.WPerMeterK;
+            return match[gbxmlstring];
+        }
+
+        public static gbXMLSerializer.densityUnitEnum getDensityUnitEnum(string gbxmlstring)
+        {
+            Dictionary<string, gbXMLSerializer.densityUnitEnum> match = new Dictionary<string, gbXMLSerializer.densityUnitEnum>();
+            match["GramsPerCubicCm"] = gbXMLSerializer.densityUnitEnum.GramsPerCubicCm;
+            match["KgPerCubicM"] = gbXMLSerializer.densityUnitEnum.KgPerCubicM;
+            match["LbsPerCubicFt"] = gbXMLSerializer.densityUnitEnum.LbsPerCubicFt;
+            match["LbsPerCubicIn"] = gbXMLSerializer.densityUnitEnum.LbsPerCubicIn;
+            return match[gbxmlstring];
+        }
+
+        public static gbXMLSerializer.specificHeatEnum getSpecificHeatUnitEnum(string gbxmlstring)
+        {
+            Dictionary<string, gbXMLSerializer.specificHeatEnum> match = new Dictionary<string, gbXMLSerializer.specificHeatEnum>();
+            match["BTUPerLbF"] = gbXMLSerializer.specificHeatEnum.BTUPerLbF;
+            match["JPerKgK"] = gbXMLSerializer.specificHeatEnum.JPerKgK;
+            return match[gbxmlstring];
+        }
+
+        public static gbXMLSerializer.uValueUnitEnum getUValueUnitEnum(string gbxmlstring)
+        {
+            Dictionary<string, gbXMLSerializer.uValueUnitEnum> match = new Dictionary<string, gbXMLSerializer.uValueUnitEnum>();
+            match["BtuPerHourSquareFtF"] = gbXMLSerializer.uValueUnitEnum.BtuPerHourSquareFtF;
+            match["WPerSquareMeterK"] = gbXMLSerializer.uValueUnitEnum.WPerSquareMeterK;
+            return match[gbxmlstring];
+        }
+
+        public static bool elementExists(XmlNode node, string elementname)
+        {
+            try
+            {
+                XmlNode anode = node[elementname];
+                if (anode != null) return true;
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static gbConstructions getGBXMLConstructions(XmlDocument xmldoc, XmlNamespaceManager xmlns)
+        {
+            string elname = "";
+            string atname = "";
+            gbConstructions gbC = new gbConstructions();
+            XmlNodeList conNodes = xmldoc.SelectNodes("/gbXMLv5:gbXML/gbXMLv5:Construction", xmlns);
+            XmlNodeList layNodes = xmldoc.SelectNodes("/gbXMLv5:gbXML/gbXMLv5:Layer", xmlns);
+            XmlNodeList matNodes = xmldoc.SelectNodes("/gbXMLv5:gbXML/gbXMLv5:Material", xmlns);
+            XmlNodeList windNodes = xmldoc.SelectNodes("/gbXMLv5:gbXML/gbXMLv5:WindowType", xmlns); 
+            //serialize all construction nodes
+            foreach (XmlNode coninst in conNodes)
+            {
+                //initialize a local construction definition, to be added to gbc.constr
+                gbXMLSerializer.Construction locon = new gbXMLSerializer.Construction();
+                locon.id = coninst.Attributes["id"].Value;
+                //get all LayerIds
+                string searchstring = "/gbXMLv5:gbXML/gbXMLv5:Construction" + "[@id='" + locon.id + "']" + "/gbXMLv5:LayerId";
+                XmlNodeList layerIds = coninst.SelectNodes(searchstring,xmlns);
+                int layercount = layerIds.Count;
+                locon.LayerId = new gbXMLSerializer.LayerId[layercount];
+                //deserialize LayerId[s]
+                for (int i = 0; i < layercount; i++)
+                {
+                    //local instance assigned to locon.LayerId[i]
+                    gbXMLSerializer.LayerId layinst = new gbXMLSerializer.LayerId();
+                    atname = "layerIdRef";
+                    if (layerIds[i].Attributes[atname] != null) { layinst.layerIdRef = layerIds[i].Attributes[atname].Value; }
+                    locon.LayerId[i] = layinst;
+                }
+                //grab name, description
+                elname = "Name";
+                if (elementExists(coninst, elname)) { locon.Name = coninst[elname].InnerText; }
+                elname = "Description";
+                if (elementExists(coninst, elname)) { locon.Name = coninst[elname].InnerText; }
+                
+                //grab roughness
+                locon.Roughness = new gbXMLSerializer.Roughness();
+                locon.Roughness.value = getRoughnessValueEnum(coninst["Roughness"].Attributes["value"].Value);
+                //grab cost information
+                searchstring = "/gbXMLv5:gbXML/gbXMLv5:Construction" + "[@id='" + locon.id + "']" + "/gbXMLv5:Cost";
+                XmlNodeList costs = coninst.SelectNodes(searchstring, xmlns);
+                int costct = costs.Count;
+                locon.Cost = new gbXMLSerializer.Cost[costct];
+                for (int i = 0; i < costct; i++)
+                {
+                    //local cost instance
+                    gbXMLSerializer.Cost costinst = new gbXMLSerializer.Cost();
+                    atname = "costType";
+                    if (costs[i].Attributes[atname] != null) { costinst.costType = getCostTypeEnum(costs[i].Attributes[atname].Value); }
+                    costinst.CostValue = new gbXMLSerializer.CostValue();
+                    elname = "CostValue";
+                    if (elementExists(costs[i], elname))
+                    {
+                        atname = "currency";
+                        if (costs[i][elname].Attributes[atname] != null)
+                        {
+                            costinst.CostValue.currency = getCurrencyTypeEnum(costs[i][elname].Attributes[atname].Value);
+                        }
+                        atname = "unit";
+                        if (costs[i][elname].Attributes[atname] != null)
+                        {
+                            costinst.CostValue.unit = costs[i][elname].Attributes[atname].Value;
+                        }
+                        costinst.CostValue.value = Convert.ToDouble(costs[i][elname].InnerText);
+                    }
+                    //add local costinst to construction def
+                    locon.Cost[i] = costinst;
+                }
+
+                //grab all absorptances
+                searchstring = "/gbXMLv5:gbXML/gbXMLv5:Construction" + "[@id='" + locon.id + "']" + "/gbXMLv5:Absorptance";
+                XmlNodeList abs = coninst.SelectNodes(searchstring,xmlns);
+                int abscount = abs.Count;
+                locon.Absorptance = new gbXMLSerializer.Absorptance[abscount];
+                for (int i = 0; i < abscount; i++)
+                {
+                    //local absorptance
+                    gbXMLSerializer.Absorptance absinst = new gbXMLSerializer.Absorptance();
+                    atname = "type";
+                    if (abs[i].Attributes[atname] != null) { absinst.type = getAbsorptanceEnum(abs[i].Attributes[atname].Value); }
+                    atname = "unit";
+                    if (abs[i].Attributes[atname] != null)
+                    {
+                        absinst.unit = getUnitEnum(abs[i].Attributes[atname].Value);
+                        absinst.value = Convert.ToDouble(abs[i].InnerText);
+                    }
+                    //add local abs to the construction def
+                    locon.Absorptance[i] = absinst;
+                }
+                //grab all Reflectances
+                searchstring = "/gbXMLv5:gbXML/gbXMLv5:Construction" + "[@id='" + locon.id + "']" + "/gbXMLv5:Reflectance";
+                XmlNodeList refl = coninst.SelectNodes(searchstring, xmlns);
+                int refcount = refl.Count;
+                locon.Reflectance = new gbXMLSerializer.Reflectance[refcount];
+                for (int i = 0; i < refcount; i++)
+                {
+                    gbXMLSerializer.Reflectance refinst = new gbXMLSerializer.Reflectance();
+                    atname = "type";
+                    if (refl[i].Attributes[atname] != null) { refinst.type = getReflectanceEnum(refl[i].Attributes[atname].Value); }
+                    atname = "unit";
+                    if (refl[i].Attributes[atname] != null)
+                    {
+                        refinst.unit = getUnitEnum(refl[i].Attributes[atname].Value);
+                        refinst.value = Convert.ToDouble(abs[i].InnerText);
+                    }
+                    locon.Reflectance[i] = refinst;
+                }
+                //grab all transmittance
+                searchstring = "/gbXMLv5:gbXML/gbXMLv5:Construction" + "[@id='" + locon.id + "']" + "/gbXMLv5:Transmittance";
+                XmlNodeList trans = coninst.SelectNodes(searchstring, xmlns);
+                int transct = trans.Count;
+                locon.Transmittance = new gbXMLSerializer.Transmittance[transct];
+                for (int i = 0; i < transct; i++)
+                {
+                    gbXMLSerializer.Transmittance traninst = new gbXMLSerializer.Transmittance();
+                    atname = "type";
+                    if (trans[i].Attributes[atname] != null) { traninst.type = getRadiationWavelengthEnum(trans[i].Attributes[atname].Value); }
+                    atname = "unit";
+                    if (trans[i].Attributes[atname] != null) { 
+                        traninst.unit = getUnitEnum(trans[i].Attributes[atname].Value);
+                        traninst.value = Convert.ToDouble(trans[i].InnerText);
+                    }
+                    locon.Transmittance[i] = traninst;
+                }
+                //grab all Emittances
+                searchstring = "/gbXMLv5:gbXML/gbXMLv5:Construction" + "[@id='" + locon.id + "']" + "/gbXMLv5:Emittance";
+                XmlNodeList emits = coninst.SelectNodes(searchstring, xmlns);
+                int emitct = emits.Count;
+                locon.Emittance = new gbXMLSerializer.Emittance[emitct];
+                for (int i = 0; i < emitct; i++)
+                {
+                    gbXMLSerializer.Emittance emitinst = new gbXMLSerializer.Emittance();
+                    atname = "type";
+                    if (emits[i].Attributes[atname] != null)
+                    {
+                        emitinst.type = getEmittanceTypeEnum(emits[i].Attributes[atname].Value);
+                    }
+                    atname = "unit";
+                    if (emits[i].Attributes[atname] != null)
+                    {
+                        emitinst.unit = getUnitEnum(emits[i].Attributes["unit"].Value);
+                        emitinst.value = Convert.ToDouble(emits[i].InnerText);
+                    }
+                    locon.Emittance[i] = emitinst;
+                }
+                gbC.constr.Add(locon);   
+            }
+            //get layers
+            foreach (XmlNode layinst in layNodes)
+            {
+                //initialize a local layer definition
+                elname = "InsideAirFilmResistance";
+                gbXMLSerializer.Layer loclay = new gbXMLSerializer.Layer();
+                loclay.id = layinst.Attributes["id"].Value;
+                if (elementExists(layinst, elname))
+                {
+                    gbXMLSerializer.InsideAirFilmResistance filmresinst = new gbXMLSerializer.InsideAirFilmResistance();
+                    atname = "unit";
+                    if (layinst[elname].Attributes[atname] != null)
+                    {
+                        filmresinst.unit = getResistanceUnitEnum(layinst[elname].Attributes[atname].Value);
+                    }
+                    filmresinst.value = Convert.ToDouble(layinst[elname].InnerText);
+                    loclay.InsideAirFilmResistance = filmresinst;
+                }
+                //get all material IDs (if this fails, not to worry, nothing will run
+                string searchstring = "/gbXMLv5:gbXML/gbXMLv5:Layer" + "[@id='" + loclay.id + "']" + "/gbXMLv5:MaterialId";
+                XmlNodeList matids = layinst.SelectNodes(searchstring, xmlns);
+                int matidct = matids.Count;
+                loclay.MaterialId = new gbXMLSerializer.MaterialId[matidct];
+                for (int i = 0; i < matidct; i++)
+                {
+                    //local materialId
+                    gbXMLSerializer.MaterialId locmat = new gbXMLSerializer.MaterialId();
+                    if (matids[i].Attributes["materialIdRef"] != null) locmat.materialIdRef = matids[i].Attributes["materialIdRef"].Value;
+                    if (matids[i].Attributes["percentOfLayer"] != null)
+                    {
+                        locmat.percentOfLayer = Convert.ToDouble(matids[i].Attributes["percentOfLayer"].Value);
+                    }
+                    loclay.MaterialId[i] = locmat;
+                }
+                gbC.layers.Add(loclay);
+            }
+            //grab materials
+            foreach (XmlNode matnode in matNodes)
+            {
+                gbXMLSerializer.Material matinst = new gbXMLSerializer.Material();
+                atname = "id";
+                if (matnode.Attributes[atname] != null) { matinst.id = matnode.Attributes[atname].Value; }
+                elname = "Name";
+                if (elementExists(matnode, elname)) { matinst.Name = matnode[elname].InnerText; }
+                elname = "Description";
+                if (elementExists(matnode, elname)) { matinst.Name = matnode[elname].InnerText; }
+                elname = "R-value";
+                if (elementExists(matnode, elname))
+                {
+                    //make local instance
+                    gbXMLSerializer.RValue rval = new gbXMLSerializer.RValue();
+                    rval.value = Convert.ToDouble(matnode[elname].InnerText);
+                    atname = "unit";
+                    if (matnode[elname].Attributes[atname] != null) {
+                        rval.unit = getResistanceUnitEnum(matnode[elname].Attributes[atname].Value);
+                    }
+                    matinst.RValue = rval;
+                }
+                elname = "Thickness";
+                if (elementExists(matnode, elname))
+                {
+                    //make local instance
+                    gbXMLSerializer.Thickness thick = new gbXMLSerializer.Thickness();
+                    thick.value = Convert.ToDouble(matnode[elname].InnerText);
+                    atname = "unit";
+                    if (matnode[elname].Attributes[atname] != null)
+                    {
+                        thick.unit =  getLengthUnitEnum(matnode[elname].Attributes[atname].Value);
+                    }
+                    matinst.Thickness = thick;
+                }
+                elname = "Conductivity";
+                if (elementExists(matnode, elname))
+                {
+                    //make local instance
+                    gbXMLSerializer.Conductivity cond = new gbXMLSerializer.Conductivity();
+                    cond.value = Convert.ToDouble(matnode[elname].InnerText);
+                    atname = "unit";
+                    if (matnode[elname].Attributes[atname] != null)
+                    {
+                        cond.unit =getConductivityUnitEnum(matnode[elname].Attributes[atname].Value);
+                    }
+                    matinst.Conductivity = cond;
+                }
+                elname = "Density";
+                if (elementExists(matnode, elname))
+                {
+                    gbXMLSerializer.Density dens = new gbXMLSerializer.Density();
+                    dens.value = Convert.ToDouble(matnode[elname].InnerText);
+                    atname = "unit";
+                    if (matnode[elname].Attributes[atname] != null)
+                    {
+                        dens.unit = getDensityUnitEnum(matnode[elname].Attributes[atname].Value);
+                    }
+                    matinst.Density = dens;
+                }
+                elname = "SpecificHeat";
+                if (elementExists(matnode, elname))
+                {
+                    gbXMLSerializer.SpecificHeat cp = new gbXMLSerializer.SpecificHeat();
+                    cp.value = Convert.ToDouble(matnode[elname].InnerText);
+                    atname = "unit";
+                    if (matnode[elname].Attributes[atname] != null)
+                    {
+                        cp.unit = getSpecificHeatUnitEnum(matnode[elname].Attributes[atname].Value);
+                    }
+                    matinst.SpecificHeat = cp;
+                }
+
+                gbC.materials.Add(matinst);
+            }
+            foreach (XmlNode window in windNodes)
+            {
+                gbXMLSerializer.WindowType winst = new gbXMLSerializer.WindowType();
+                atname = "id";
+                if (window.Attributes[atname] != null)
+                {
+                    winst.id = window.Attributes[atname].Value; 
+                }
+                atname = "DOELibIdRef";
+                if (window.Attributes[atname] != null)
+                {
+                    winst.DOELibIdRef = window.Attributes[atname].Value;
+                }
+                elname = "Name";
+                if (elementExists(window, elname)) { winst.Name = window[elname].InnerText; }
+                elname = "Description";
+                if (elementExists(window, elname)) { winst.Name = window[elname].InnerText; }
+                elname = "U-value";
+                if (elementExists(window, elname))
+                {
+                    gbXMLSerializer.UValue uval = new gbXMLSerializer.UValue();
+                    uval.value = Convert.ToDouble(window[elname].InnerText);
+                    atname = "unit";
+                    if (window[elname].Attributes[atname] != null)
+                    {
+                        uval.unit =getUValueUnitEnum(window[elname].Attributes[atname].Value);
+                    }
+                    winst.UValue = uval;
+                }
+                string searchstring = "/gbXMLv5:gbXML/gbXMLv5:WindowType" + "[@id='" + winst.id + "']" + "/gbXMLv5:SolarHeatGainCoeff";
+                XmlNodeList shgcs = window.SelectNodes(searchstring, xmlns);
+                int shgcct = shgcs.Count;
+                winst.SolarHeatGainCoeff = new gbXMLSerializer.SolarHeatGainCoeff[shgcct];
+                for (int i = 0; i < shgcct; i++)
+                {
+                    //make local instance
+                    gbXMLSerializer.SolarHeatGainCoeff shgc = new gbXMLSerializer.SolarHeatGainCoeff();
+                    shgc.value = Convert.ToDouble(window[elname].InnerText);
+                    atname = "unit";
+                    if (shgcs[i].Attributes[atname] != null)
+                    {
+                        shgc.unit = getUnitEnum(shgcs[i].Attributes[atname].Value);
+                    }
+                    atname = "solarIncidentAngle";
+                    if (window[elname].Attributes[atname] != null)
+                    {
+                        shgc.solarIncidentAngle = Convert.ToDouble(shgcs[i].Attributes[atname].Value);
+                    }
+                    winst.SolarHeatGainCoeff[i] = shgc;
+                }
+                searchstring = "/gbXMLv5:gbXML/gbXMLv5:WindowType" + "[@id='" + winst.id + "']" + "/gbXMLv5:Transmittance";
+                XmlNodeList trans = window.SelectNodes(searchstring, xmlns);
+                int transct = trans.Count;
+                winst.Transmittance = new gbXMLSerializer.Transmittance[transct];
+                for (int i = 0; i < transct; i++)
+                {
+                    //make local copy
+                    gbXMLSerializer.Transmittance loct = new gbXMLSerializer.Transmittance();
+                    loct.value = Convert.ToDouble(trans[i].InnerText);
+                    atname = "type";
+                    if (trans[i].Attributes[atname] != null)
+                    {
+                        loct.type =getRadiationWavelengthEnum(trans[i].Attributes[atname].Value);
+                    }
+                    atname = "unit";
+                    if (trans[i].Attributes[atname] != null)
+                    {
+                        loct.unit = getUnitEnum(trans[i].Attributes[atname].Value);
+                    }
+                    winst.Transmittance[i] = loct;
+                }
+                //reflectance
+                //emittance
+                //cost
+                searchstring = "/gbXMLv5:gbXML/gbXMLv5:WindowType" + "[@id='" + winst.id + "']" + "/gbXMLv5:Glaze";
+                XmlNodeList glaze = window.SelectNodes(searchstring, xmlns);
+                int glazect = glaze.Count;
+                winst.Glaze = new gbXMLSerializer.Glaze[glazect];
+                for (int i = 0; i < glazect; i++)
+                {
+                    gbXMLSerializer.Glaze locgls= new gbXMLSerializer.Glaze();
+                    atname = "id";
+                    if (glaze[i].Attributes[atname] != null) { locgls.id = glaze[i].Attributes[atname].Value; }
+                    elname = "Name";
+                    if (elementExists(glaze[i], elname)) { locgls.Name = glaze[i][elname].InnerText; }
+                    elname = "Description";
+                    if (elementExists(glaze[i], elname)) { locgls.Name = glaze[i][elname].InnerText; }
+                    //thickness
+                    locgls.Thickness = new gbXMLSerializer.Thickness();
+                    atname = "unit";
+                    
+                    winst.Glaze[i] = locgls;
+                }
+                gbC.windows.Add(winst);
+            }
+            return gbC;
+        }
+
         public static List<SurfaceDefinitions> MakeSurfaceList(XmlDocument xmldoc, XmlNamespaceManager xmlns)
         {
             List<SurfaceDefinitions> surfaces = new List<SurfaceDefinitions>();
@@ -3889,6 +4436,10 @@ namespace DOEgbXML
                         else if (at.Name == "surfaceType")
                         {
                             surfDef.SurfaceType = at.Value;
+                        }
+                        else if (at.Name == "constructionIdRef")
+                        {
+                            surfDef.constructionIdRef = at.Value;
                         }
                     }
                     if (surfaceNode.HasChildNodes)
