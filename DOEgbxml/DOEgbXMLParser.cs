@@ -4383,27 +4383,183 @@ namespace DOEgbXML
                     }
                     winst.Transmittance[i] = loct;
                 }
-                //reflectance
-                //emittance
-                //cost
+                //window reflectance
+                searchstring = "/gbXMLv5:gbXML/gbXMLv5:WindowType" + "[@id='" + winst.id + "']" + "/gbXMLv5:Reflectance";
+                XmlNodeList windref = window.SelectNodes(searchstring, xmlns);
+                int windrefct = windref.Count;
+                winst.Reflectance = new gbXMLSerializer.Reflectance[windrefct];
+                for (int i = 0; i < windrefct; i++)
+                {
+                    winst.Reflectance[i] = new gbXMLSerializer.Reflectance();
+                    winst.Reflectance[i].value = Convert.ToDouble(windref[i].InnerText);
+                    atname = "type";
+                    if (windref[i].Attributes[atname] != null)
+                    {
+                        winst.Reflectance[i].type =getReflectanceEnum(windref[i].Attributes[atname].Value);
+                    }
+                    atname = "unit";
+                    if (windref[i].Attributes[atname] != null)
+                    {
+                        winst.Reflectance[i].unit = getUnitEnum(windref[i].Attributes[atname].Value);
+                    }
+                    
+                }
+                //window emittance
+                searchstring = "/gbXMLv5:gbXML/gbXMLv5:WindowType" + "[@id='" + winst.id + "']" + "/gbXMLv5:Emittance";
+                XmlNodeList wems = window.SelectNodes(searchstring, xmlns);
+                int emct = wems.Count;
+                winst.Emittance = new gbXMLSerializer.Emittance[emct];
+                for (int i = 0; i < emct; i++)
+                {
+                    winst.Emittance[i] = new gbXMLSerializer.Emittance();
+                    winst.Emittance[i].value = Convert.ToDouble(wems[i].InnerText);
+                    atname = "type";
+                    if(wems[i].Attributes[atname]!=null)
+                    {
+                        winst.Emittance[i].type =getEmittanceTypeEnum(wems[i].Attributes[atname].Value);
+                    }
+                    atname = "unit";
+                    if (wems[i].Attributes[atname] != null)
+                    {
+                        winst.Emittance[i].unit = getUnitEnum(wems[i].Attributes[atname].Value);
+                    }
+                }
+                //window cost
+                //window glazing layers
                 searchstring = "/gbXMLv5:gbXML/gbXMLv5:WindowType" + "[@id='" + winst.id + "']" + "/gbXMLv5:Glaze";
                 XmlNodeList glaze = window.SelectNodes(searchstring, xmlns);
                 int glazect = glaze.Count;
                 winst.Glaze = new gbXMLSerializer.Glaze[glazect];
                 for (int i = 0; i < glazect; i++)
                 {
+                    //glaze DOELibIdRef TBD;
+                    //glaze Description TBD;
                     gbXMLSerializer.Glaze locgls= new gbXMLSerializer.Glaze();
                     atname = "id";
                     if (glaze[i].Attributes[atname] != null) { locgls.id = glaze[i].Attributes[atname].Value; }
                     elname = "Name";
                     if (elementExists(glaze[i], elname)) { locgls.Name = glaze[i][elname].InnerText; }
                     elname = "Description";
-                    if (elementExists(glaze[i], elname)) { locgls.Name = glaze[i][elname].InnerText; }
+                    if (elementExists(glaze[i], elname)) { locgls.Description = glaze[i][elname].InnerText; }
                     //thickness
+                    elname = "Thickness";
                     locgls.Thickness = new gbXMLSerializer.Thickness();
+                    locgls.Thickness.value = Convert.ToDouble(glaze[i][elname].InnerText);
                     atname = "unit";
+                    if (glaze[i][elname].Attributes[atname] != null)
+                    {
+                        locgls.Thickness.unit = getLengthUnitEnum(glaze[i][elname].Attributes[atname].Value);
+                    }
+                    //conductivity
+                    elname = "Conductivity";
+                    locgls.Conductivity = new gbXMLSerializer.Conductivity();
+                    locgls.Conductivity.value = Convert.ToDouble(glaze[i][elname].InnerText);
+                    atname = "unit";
+                    if (glaze[i][elname].Attributes[atname] != null)
+                    {
+                        locgls.Conductivity.unit = getConductivityUnitEnum(glaze[i][elname].Attributes[atname].Value);
+                    }
+                    //transmittance
+                    searchstring = "/gbXMLv5:gbXML/gbXMLv5:WindowType" + "[@id='" + winst.id + "']" + "/gbXMLv5:Glaze" + "[@id='" + locgls.id + "']" + "/gbXMLv5:Transmittance";
+                    XmlNodeList gtrans = glaze[i].SelectNodes(searchstring, xmlns);
+                    int gtransct = gtrans.Count;
+                    locgls.Transmittance = new gbXMLSerializer.Transmittance[gtransct];
+                    for (int j = 0; j < gtransct; j++)
+                    {
+                        locgls.Transmittance[j] = new gbXMLSerializer.Transmittance();
+                        locgls.Transmittance[j].value = Convert.ToDouble(gtrans[j].InnerText);
+                        //type
+                        atname = "type";
+                        if (gtrans[j].Attributes[atname] != null) 
+                        { 
+                            locgls.Transmittance[j].type =getRadiationWavelengthEnum(gtrans[j].Attributes[atname].Value); 
+                        }
+                        //unit
+                        atname = "unit";
+                        if (gtrans[j].Attributes[atname] != null)
+                        {
+                            locgls.Transmittance[j].unit = getUnitEnum(gtrans[j].Attributes[atname].Value);
+                        }
+                    }
+                    //reflectance
+                    searchstring = "/gbXMLv5:gbXML/gbXMLv5:WindowType" + "[@id='" + winst.id + "']" + "/gbXMLv5:Glaze" + "[@id='" + locgls.id + "']" + "/gbXMLv5:Reflectance";
+                    XmlNodeList grefs = glaze[i].SelectNodes(searchstring, xmlns);
+                    int grefct = grefs.Count;
+                    locgls.Reflectance = new gbXMLSerializer.Reflectance[grefct];
+                    for (int j = 0; j < grefct; j++)
+                    {
+                        locgls.Reflectance[j] = new gbXMLSerializer.Reflectance();
+                        locgls.Reflectance[j].value = Convert.ToDouble(grefs[j].InnerText);
+                        //type
+                        atname = "type";
+                        if (grefs[j].Attributes[atname] != null)
+                        {
+                            locgls.Reflectance[j].type =getReflectanceEnum(grefs[j].Attributes[atname].Value);
+                        }
+                        //unit
+                        atname = "unit";
+                        if (grefs[j].Attributes[atname] != null)
+                        {
+                            locgls.Reflectance[j].unit = getUnitEnum(grefs[j].Attributes[atname].Value);
+                        }
+                    }
+                    //emittance
+                    searchstring = "/gbXMLv5:gbXML/gbXMLv5:WindowType" + "[@id='" + winst.id + "']" + "/gbXMLv5:Glaze" + "[@id='" + locgls.id + "']" + "/gbXMLv5:Emittance";
+                    XmlNodeList gems = glaze[i].SelectNodes(searchstring, xmlns);
+                    int gemct = gems.Count;
+                    locgls.Emittance = new gbXMLSerializer.Emittance[gemct];
+                    for (int j = 0; j < gemct; j++)
+                    {
+                        locgls.Emittance[j] = new gbXMLSerializer.Emittance();
+                        locgls.Emittance[j].value = Convert.ToDouble(gems[j].InnerText);
+                        //type
+                        atname = "type";
+                        if (gems[j].Attributes[atname] != null)
+                        {
+                            locgls.Emittance[j].type = getEmittanceTypeEnum(gems[j].Attributes[atname].Value);
+                        }
+                        //unit
+                        atname = "unit";
+                        if (gems[j].Attributes[atname] != null)
+                        {
+                            locgls.Emittance[j].unit = getUnitEnum(gems[j].Attributes[atname].Value);
+                        }
+                    }
+                    
                     
                     winst.Glaze[i] = locgls;
+                }
+                //gaps
+                searchstring = "/gbXMLv5:gbXML/gbXMLv5:WindowType" + "[@id='" + winst.id + "']" + "/gbXMLv5:Gap";
+                XmlNodeList gaps = window.SelectNodes(searchstring, xmlns);
+                int gapct = gaps.Count;
+                winst.Gap = new gbXMLSerializer.Gap[gapct];
+                for (int i = 0; i < gapct; i++)
+                {
+                    gbXMLSerializer.Gap locgap = new gbXMLSerializer.Gap();
+                    //gap id
+                    atname = "id";
+                    if (gaps[i].Attributes[atname] != null) { locgap.id = gaps[i].Attributes[atname].Value; }
+                    elname = "Name";
+                    if (elementExists(gaps[i], elname)) { locgap.Name = gaps[i][elname].InnerText; }
+                    elname = "Description";
+                    if (elementExists(gaps[i], elname)) { locgap.Description = gaps[i][elname].InnerText; }
+                    //Thickness
+                    elname = "Thickness";
+                    locgap.Thickness = new gbXMLSerializer.Thickness();
+                    if (elementExists(gaps[i],elname)) {locgap.Thickness.value = Convert.ToDouble(gaps[i][elname].InnerText);}
+                    //unit
+                    atname = "unit";
+                    if (gaps[i][elname].Attributes[atname] != null) { locgap.Thickness.unit = getLengthUnitEnum(gaps[i][elname].Attributes[atname].Value); }
+                    //Conductivity
+                    elname = "Conductivity";
+                    locgap.Conductivity = new gbXMLSerializer.Conductivity();
+                    if (elementExists(gaps[i], elname)) { locgap.Conductivity.value = Convert.ToDouble(gaps[i][elname].InnerText); }
+                    ///unit
+                    atname = "unit";
+                    if (gaps[i][elname].Attributes[atname] != null) { locgap.Conductivity.unit = getConductivityUnitEnum(gaps[i][elname].Attributes[atname].Value); }
+                    
+                    winst.Gap[i] = locgap;
                 }
                 gbC.windows.Add(winst);
             }
