@@ -18,6 +18,22 @@ namespace DOEgbXML
             public List<gbXMLSerializer.DaySchedule> dsch { get; set; }
         }
 
+        public class gbXMLConstructions
+        {
+            public List<gbXMLSerializer.Construction> gbConst { get; set; }
+            public List<gbXMLSerializer.Layer> gbLayer { get; set; }
+            public List<gbXMLSerializer.Material> gbMaterials { get; set; }
+            public List<gbXMLSerializer.WindowType> gbGlazingConst { get; set; }
+
+            public gbXMLConstructions()
+            {
+                gbConst = new List<gbXMLSerializer.Construction>();
+                gbLayer = new List<gbXMLSerializer.Layer>();
+                gbMaterials = new List<gbXMLSerializer.Material>();
+                gbGlazingConst = new List<gbXMLSerializer.WindowType>();
+            }
+        }
+
 
         public class EdgeFamily
         {
@@ -1836,6 +1852,8 @@ namespace DOEgbXML
 
             return report;
         }
+
+        
 
         public static List<gbXMLSchedules> getYearSchedules(XmlDocument xmldoc, XmlNamespaceManager xmlns,string searchstring)
         {
