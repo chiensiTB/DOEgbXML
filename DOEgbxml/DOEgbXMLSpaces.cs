@@ -13,20 +13,20 @@ namespace DOEgbXML
 {
     public class gbXMLSpaces
     {
-        public string id;
-        public PlanarGeometry pg;
-        public ShellGeometry sg;
-        public List<SpaceBoundary> spacebounds;
-        public string CADObjectID;
-        public gbXMLSerializer.EquipPowerPerArea sep;
-        public gbXMLSerializer.YearSchedule epsched;
-        public gbXMLSerializer.LightPowerPerArea slp;
-        public gbXMLSerializer.YearSchedule lpsched;
-        public gbXMLSerializer.PeopleNumber pn;
-        public List<gbXMLSerializer.PeopleHeatGain> phg;
-        public gbXMLSerializer.YearSchedule psched;
-        public gbXMLSerializer.Area spArea;
-        public gbXMLSerializer.Volume spVol;
+        public string id { get; set; }
+        public PlanarGeometry pg { get; set; }
+        public ShellGeometry sg { get; set; }
+        public List<SpaceBoundary> spacebounds { get; set; }
+        public string CADObjectID { get; set; }
+        public gbXMLSerializer.EquipPowerPerArea sep { get; set; }
+        public gbXMLSerializer.YearSchedule epsched { get; set; }
+        public gbXMLSerializer.LightPowerPerArea slp { get; set; }
+        public gbXMLSerializer.YearSchedule lpsched { get; set; }
+        public gbXMLSerializer.PeopleNumber pn { get; set; }
+        public List<gbXMLSerializer.PeopleHeatGain> phg { get; set; }
+        public gbXMLSerializer.YearSchedule psched { get; set; }
+        public gbXMLSerializer.Area spArea { get; set; }
+        public gbXMLSerializer.Volume spVol { get; set; }
 
         public class PlanarGeometry
         {
