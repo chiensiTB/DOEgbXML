@@ -145,7 +145,6 @@ namespace DOEgbXML
                         if (at.Name == "id")
                         {
                             space.id = at.Value;
-                            break;
                         }
                         else if (at.Name == "lightScheduleIdRef")
                         {
@@ -174,12 +173,12 @@ namespace DOEgbXML
                             if (node.Name == "Area")
                             {
                                 space.spArea = new Area();
-                                space.spArea.val = node.Value;
+                                space.spArea.val = node.InnerText;
                             }
                             else if (node.Name == "Volume")
                             {
                                 space.spVol = new Volume();
-                                space.spVol.val = node.Value;
+                                space.spVol.val = node.InnerText;
                             }
                             else if (node.Name == "PlanarGeometry")
                             {
@@ -381,7 +380,7 @@ namespace DOEgbXML
                                     {
                                         space.pn.unit = getPeopleNumberUnitEnum(at.Value);
                                     }
-                                    space.pn.valuefield = node.Value;
+                                    space.pn.valuefield = node.InnerText;
                                 }
                             }
                             else if (node.Name == "PeopleHeatGain")
@@ -397,10 +396,10 @@ namespace DOEgbXML
                                     }
                                     else if (at.Name == "heatGainType")
                                     {
-                                        locphg.heatGainType = getPeopleHgTypeEnum(at.Value);
+                                        locphg.heatGainType = getPeopleHgTypeEnum(at.InnerText);
                                     }
                                 }
-                                locphg.value = node.Value;
+                                locphg.value = node.InnerText;
                                 space.phg.Add(locphg);
                             }
                         }
