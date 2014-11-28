@@ -13,26 +13,28 @@ namespace DOEgbXML
     public class OpeningDefinitions
     {
         //creates instances of an object that store information about surfaces in a gbXML file
-        public string OpeningType;
-        public string OpeningId;
-        public string ParentSurfaceId;
-        public double ParentAzimuth;
-        public double ParentTilt;
-        public double Azimuth;
-        public double Tilt;
-        public double Height;
-        public double Width;
-        public double surfaceArea;
-        public Vector.CartCoord InsertionPoint;
-        public List<Vector.MemorySafe_CartCoord> PlCoords;
-        public Vector.MemorySafe_CartVect PlRHRVector;
+        public string OpeningType { get; set; }
+        public string OpeningId { get; set; }
+        public string constructionId { get; set; }
+        public string windowTypeId { get; set; }
+        public string ParentSurfaceId { get; set; }
+        public double ParentAzimuth { get; set; }
+        public double ParentTilt { get; set; }
+        public double Azimuth { get; set; }
+        public double Tilt { get; set; }
+        public double Height { get; set; }
+        public double Width { get; set; }
+        public double surfaceArea { get; set; }
+        public Vector.CartCoord InsertionPoint { get; set; }
+        public List<Vector.MemorySafe_CartCoord> PlCoords { get; set; }
+        public Vector.MemorySafe_CartVect PlRHRVector { get; set; }
     }
     public class gbConstructions
     {
-        public List<gbXMLSerializer.Construction> constr;
-        public List<gbXMLSerializer.Layer> layers;
-        public List<gbXMLSerializer.Material> materials;
-        public List<gbXMLSerializer.WindowType> windows;
+        public List<gbXMLSerializer.Construction> constr { get; set; }
+        public List<gbXMLSerializer.Layer> layers { get; set; }
+        public List<gbXMLSerializer.Material> materials { get; set; }
+        public List<gbXMLSerializer.WindowType> windows { get; set; }
 
         public gbConstructions()
         {
@@ -1871,6 +1873,14 @@ namespace DOEgbXML
                         else if (at.Name == "openingType")
                         {
                             openingDef.OpeningType = at.Value;
+                        }
+                        else if (at.Name == "windowTypeIdRef")
+                        {
+                            openingDef.windowTypeId = at.Value;
+                        }
+                        else if (at.Name == "constructionIdRef")
+                        {
+                            openingDef.constructionId = at.Value;
                         }
                     }
                     if (openingNode.HasChildNodes)
@@ -4091,7 +4101,11 @@ namespace DOEgbXML
                 
                 //grab roughness
                 locon.Roughness = new gbXMLSerializer.Roughness();
-                locon.Roughness.value = getRoughnessValueEnum(coninst["Roughness"].Attributes["value"].Value);
+                elname = "Roughness";
+                if (elementExists(coninst, elname))
+                {
+                    locon.Roughness.value = getRoughnessValueEnum(coninst["Roughness"].Attributes["value"].Value);
+                }
                 //grab cost information
                 searchstring = "/gbXMLv5:gbXML/gbXMLv5:Construction" + "[@id='" + locon.id + "']" + "/gbXMLv5:Cost";
                 XmlNodeList costs = coninst.SelectNodes(searchstring, xmlns);
